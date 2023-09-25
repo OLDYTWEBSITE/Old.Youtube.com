@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>YouTube Icon</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+        /* Body styles */
+        body {
+            background-color: #f5f5f5;
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Header styles */
+        header {
+            background-color: #bb0000;
+            padding: 10px;
+            color: #fff;
+            text-align: center;
+            position: relative;
+        }
+
+        /* Logo styles */
+        .logo {
+            font-size: 30px;
+            font-weight: bold;
+            display: inline-block;
+            margin-right: 20px;
+            color: #fff;
+        }
+
+        /* Search bar styles */
+        .search-bar {
+            position: absolute;
+            top: 50%;
+            left: 60%;
+            transform: translate(-50%, -50%);
+            background-color: #fff;
+            padding: 10px;
+            border-radius: 20px;
+            width: 300px;
+        }
+
+        .search-bar input[type="text"] {
+            width: 100%;
+            padding: 2px;
+            font-size: 16px;
+            border: none;
+            outline: none;
+        }
+
+        /* Main content styles */
+        .content {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            grid-gap: 20px;
+        }
+
+        /* Video styles */
+        .video {
+            border: 1px solid #ccc;
+            padding: 10px;
+            background-color: #fff;
+        }
+
+        .video .title {
+            font-size: 18px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .video .thumbnail {
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1 class="logo">Old YouTube</h1>
+        <div class="search-bar">
+            <input type="text" placeholder="Search">
+        </div>
+    </header>
+
+    <div class="content" id="videoContainer">
+        <!-- Video elements will be dynamically added here -->
+    </div>
+
+    <script>
+        // YouTube Data API key
+        var apiKey = 'AIzaSyCG4Wr9FD9sgBwqegfe8Mq_-lzHZnzij_4';
+
+        // Fetch popular videos using the YouTube Data API
+        function fetchPopularVideos() {
+            var url = 'https://www.googleapis.com/youtube/v3/videos?part=snippet&chart=mostPopular&maxResults=9&key=' + apiKey;
+
+            fetch(url)
+                .then(response => response.json())
+                .then(data => {
+                    var videos = data.items;
+
+                    // Clear the existing video container
+                    var videoContainer = document.getElementById('videoContainer');
+                    videoContainer.innerHTML = '';
+
+                    // Add video elements to the container
+                    videos.forEach(video => {
+                        var videoElement = createVideoElement(video);
+                        videoContainer.appendChild(videoElement);
+                    });
+                })
+                .catch(error => {
+                    console.log('Error fetching popular videos:', error);
+                });
+        }
+
+        // Create a video element based on the video data
+        function createVideoElement(video) {
+            var videoElement = document.createElement('div');
+            videoElement.className = 'video';
+
+            var titleElement = document.createElement('h2');
+            titleElement.className = 'title';
+            titleElement.textContent = video.snippet.title;
+
+            var thumbnailElement = document.createElement('img');
+            thumbnailElement.className = 'thumbnail';
+            thumbnailElement.src = video.snippet.thumbnails.default.url;
+            thumbnailElement.alt = video.snippet.title;
+
+            videoElement.appendChild(titleElement);
+            videoElement.appendChild(thumbnailElement);
+
+            // Add click event listener to redirect to video page
+            videoElement.addEventListener('click', function() {
+                var videoId = video.id;
+                redirectToYouTubeVideo(videoId);
+            });
+
+            return videoElement;
+        }
+
+        // Function to redirect to the video page with the given video ID
+        function redirectToYouTubeVideo(videoId) {
+            window.location.href = `YTVideo.html/${videoId}`;
+        }
+
+        // Call the function on page load
+        window.addEventListener('load', fetchPopularVideos);
+    </script>
+</body>
+</html>
